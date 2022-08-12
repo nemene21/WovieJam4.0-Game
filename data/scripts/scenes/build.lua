@@ -1,5 +1,9 @@
 
 function buildReload()
+
+    if player == nil then
+
+    end
     
 end
 

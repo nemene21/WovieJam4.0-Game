@@ -17,7 +17,8 @@ require "frameworkScripts.text"
 require "frameworkScripts.audio"
 
 -- Project Specific Modules
-
+require "data.scripts.robots"
+require "data.scripts.parts"
 
 -- Scenes
 require "data.scripts.scenes.blank"; require "data.scripts.scenes.game"; require "data.scripts.scenes.build"
