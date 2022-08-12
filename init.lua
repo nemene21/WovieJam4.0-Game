@@ -20,12 +20,14 @@ require "frameworkScripts.audio"
 
 
 -- Scenes
-require "data.scripts.scenes.blank"; require "data.scripts.scenes.game"
+require "data.scripts.scenes.blank"; require "data.scripts.scenes.game"; require "data.scripts.scenes.build"
 
 scenes = {
 
-blank  = {blank,blankReload,blankDie},
+blank  = {blank, blankReload, blankDie},
 
-game   = {game,gameReload,gameDie}
+game   = {game, gameReload, gameDie},
+
+build  = {build, buildReload, buildDie},
 
 }
