@@ -1,13 +1,5 @@
 
 function gameReload()
-
-    player = newRobot(400, 300, function()
-    
-        
-    
-    end)
-
-    player.
     
 end
 
