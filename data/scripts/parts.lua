@@ -55,8 +55,6 @@ end
 
 function drawSpike(self, robot)
 
-    self.offset = self.offset or {x=0,y=0}
-
     setColor(255, 0, 0)
     love.graphics.circle("fill", robot.x + self.offset.x or 0 - camera[1], robot.y + self.offset.y or 0 - camera[2], 24)
     setColor(255, 255, 255)
