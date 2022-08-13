@@ -1,7 +1,7 @@
 
 WHEEL_SMOKE = loadJson("data/graphics/particles/wheelSmoke.json")
 
-function newWheel() -- Wheel
+function newWheel(tier) -- Wheel
 
     return {
 
@@ -10,7 +10,7 @@ function newWheel() -- Wheel
 
         movement = 0,
 
-        distance = 48,
+        distance = 45,
 
         rotation = 90,
 
@@ -25,7 +25,7 @@ function newWheel() -- Wheel
 
 end
 
-function processWheel(self, robot)
+function processWheel(self, robot, enemy)
 
     self.offset = self.offset:rotate(robot.rotationVel * dt)
 
@@ -49,23 +49,25 @@ WHEEL = love.graphics.newImage("data/graphics/images/woodWheel.png")
 
 function drawWheel(self, robot)
 
-    drawSprite(WHEEL, robot.x + self.offset.x or 0, robot.y + self.offset.y or 0, 1 - self.iFrames / 0.2 * 0.15, 1 - self.iFrames / 0.2 * 0.15, ((robot.rotation or 0) - (self.rotation or 0)) / 180 * 3.14)
+    local effect = 1 - self.hp / self.maxHp
+
+    drawSprite(WHEEL, robot.x + (self.offset.x or 0), robot.y + (self.offset.y or 0), 1 - self.iFrames / 0.2 * 0.15, 1 - self.iFrames / 0.2 * 0.15, ((robot.rotation or 0) - (self.rotation or 0)) / 180 * 3.14 + math.sin(globalTimer * 15 + (self.rotation or 0)) * 0.15 * effect)
 
 end
 
-function newSpike() -- Spike
+function newSpike(tier) -- Spike
 
     return {
 
         process = processSpike,
         draw = drawSpike,
 
-        distance = 60,
+        distance = 57,
 
-        maxHp = 100,
+        maxHp = 100 + 20 * tier,
         hp = 100,
 
-        damage = 3,
+        damage = 3 + tier,
 
         barLerp = 1
 
@@ -75,7 +77,7 @@ end
 
 WOOD_SPIKE = love.graphics.newImage("data/graphics/images/woodSpike.png")
 
-function processSpike(self, robot)
+function processSpike(self, robot, enemy)
 
     self.offset = self.offset:rotate(robot.rotationVel * dt)
 
@@ -83,14 +85,154 @@ end
 
 function drawSpike(self, robot)
 
-    drawSprite(WOOD_SPIKE, robot.x + self.offset.x or 0, robot.y + self.offset.y or 0, 1 + self.iFrames / 0.2 * 0.15, 1 - self.iFrames / 0.2 * 0.15, ((robot.rotation or 0) - (self.rotation or 0)) / 180 * 3.14 + 1.57)
+    local effect = 1 - self.hp / self.maxHp
 
+    drawSprite(WOOD_SPIKE, robot.x + (self.offset.x or 0), robot.y + (self.offset.y or 0), 1 + self.iFrames / 0.2 * 0.15, 1 - self.iFrames / 0.2 * 0.15, ((robot.rotation or 0) - (self.rotation or 0)) / 180 * 3.14 + 1.57 + math.sin(globalTimer * 15 + (self.rotation or 0)) * 0.15 * effect)
+
+end
+
+ROCKET_ENGINE_FIRE = loadJson("data/graphics/particles/rocketEngine.json")
+
+function newRocketEngine(tier) -- Rocket engine
+
+    return {
+
+        process = processRocketEngine,
+        draw = drawRocketEngine,
+
+        movement = 0,
+
+        distance = 45,
+
+        rotation = 90,
+
+        particles = newParticleSystem(0, 0, deepcopyTable(ROCKET_ENGINE_FIRE)),
+
+        maxHp = 35,
+        hp = 35 + 15 * tier,
+
+        barLerp = 1
+
+    }
+
+end
+
+function processRocketEngine(self, robot, enemy)
+
+    self.offset = self.offset:rotate(robot.rotationVel * dt)
+
+    self.movement = lerp(self.movement, math.max(robot.tryingToMove, 0) * 650, dt * 5)
+
+    local newRocketVel = newVec(self.movement, 0)
+    newRocketVel:rotate(self.offset:getRot() + 180)
+
+    robot.velocity.x = robot.velocity.x + newRocketVel.x
+    robot.velocity.y = robot.velocity.y + newRocketVel.y
+
+    self.particles.x = robot.x + self.offset.x
+    self.particles.y = robot.y + self.offset.y
+    self.particles.rotation = self.offset:getRot()
+    self.particles.tickSpeed.a = lerp(0.1, 0.02, robot.tryingToMove)
+    self.particles.tickSpeed.b = lerp(0.1, 0.03, robot.tryingToMove)
+    self.particles.particleData.color.a.a = robot.tryingToMove * 0.75
+    self.particles.particleData.color.a.b = robot.tryingToMove
+    self.particles:process()
+
+    setColor(255, 255, 255)
+
+end
+
+function drawRocketEngine(self, robot)
+
+    local effect = 1 - self.hp / self.maxHp
+
+    setColor(255, 100, 55)
+    love.graphics.circle("fill", robot.x + (self.offset.x or 0) - camera[1], robot.y + (self.offset.y or 0) - camera[2], 20)
+    setColor(255, 255, 255)
+end
+
+function newGun(tier) -- Rocket engine
+
+    return {
+
+        tier = tier,
+
+        process = processGun,
+        draw = drawGun,
+
+        distance = 45,
+
+        rotation = 90,
+
+        particles = newParticleSystem(0, 0, deepcopyTable(ROCKET_ENGINE_FIRE)),
+
+        maxHp = 35,
+        hp = 35 + 20 * tier,
+
+        firerate = 1 + 0.2 * tier,
+
+        shootTimer = 1,
+
+        barLerp = 1
+
+    }
+
+end
+
+function processGun(self, robot, enemy)
+
+    self.offset = self.offset:rotate(robot.rotationVel * dt)
+
+    self.shootTimer = self.shootTimer - dt * self.firerate
+
+    if self.shootTimer < 0 then
+
+        self.shootTimer = 0.18
+
+        local bulletVel = deepcopyTable(self.offset)
+        bulletVel:normalize()
+
+        bulletVel:rotate(love.math.random(-8, 8))
+
+        bulletVel.x = bulletVel.x * 900
+        bulletVel.y = bulletVel.y * 900
+
+        shake(1, 2, 0.1)
+
+        table.insert(bullets, {
+
+            enemy = enemy,
+
+            vel = bulletVel,
+
+            x = robot.x + (self.offset.x or 0),
+            y = robot.y + (self.offset.y or 0),
+
+            damage = 7
+
+        })
+
+    end
+
+    setColor(255, 255, 255)
+
+end
+
+function drawGun(self, robot)
+
+    local effect = 1 - self.hp / self.maxHp
+
+    setColor(255, 255, 0)
+    love.graphics.circle("fill", robot.x + (self.offset.x or 0) - camera[1], robot.y + (self.offset.y or 0) - camera[2], 20)
+    setColor(255, 255, 255)
 end
 
 PARTS = {
 
 wheel = newWheel,
-spike = newSpike
+spike = newSpike,
+rocketEngine = newRocketEngine,
+gun = newGun
 
 }
 
@@ -162,11 +304,14 @@ function collidePart(part, robot, enemy)
 
                 local momentum = newVec(enemy.velocity.x + robot.velocity.x, enemy.velocity.y + robot.velocity.y):getLen() / 500
 
+                local enemySpeedFactor = enemy.velocity:getLen() / 250 * 0.5 + momentum * 0.5
+                local selfSpeedFactor = robot.velocity:getLen() / 250 * 0.5 + momentum * 0.5
+
                 part.iFrames = 0.4
 
-                part.hp = part.hp - 10 * momentum * (enemyPart.damage or 1) * (enemyPart.shield or 1)
+                part.hp = part.hp - 10 * enemySpeedFactor * (enemyPart.damage or 1) * (enemyPart.shield or 1)
 
-                enemyPart.hp = enemyPart.hp - 10 * momentum * (part.damage or 1) * (part.shield or 1)
+                enemyPart.hp = enemyPart.hp - 10 * selfSpeedFactor * (part.damage or 1) * (part.shield or 1)
 
                 local newKnockback = newVec(momentum * 600, 0):rotate(newVec(robot.x - enemy.x, robot.y - enemy.y):getRot() + 180)
 
@@ -259,9 +404,10 @@ function drawPartSmoke(part, robot)
         part.smokeParticles.y = robot.y + part.offset.y
 
         local effect = 1 - part.hp / part.maxHp
+        effect = effect * effect
 
-        part.smokeParticles.particleData.color.a.a = 0.3 * effect
-        part.smokeParticles.particleData.color.a.b = 0.5 * effect
+        part.smokeParticles.particleData.color.a.a = 0.65 * effect
+        part.smokeParticles.particleData.color.a.b = 0.8 * effect
 
         part.smokeParticles:process()
 
@@ -283,7 +429,7 @@ function drawPartUI(part, robot)
         setColor(255,255,255,255 * boolToInt(sceneAt == "game"))
         love.graphics.rectangle("fill", robot.x + part.offset.x - 18, robot.y + part.offset.y - 16, 36 * part.barLerp, 8)
 
-        setColor(255,0,0,255 * boolToInt(sceneAt == "game"))
+        setColor(255,0,68,255 * boolToInt(sceneAt == "game"))
         love.graphics.rectangle("fill", robot.x + part.offset.x - 18, robot.y + part.offset.y - 16, 36 * part.hp / part.maxHp, 8)
 
         setColor(0,0,0,255 * boolToInt(sceneAt == "game"))

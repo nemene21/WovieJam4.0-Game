@@ -42,7 +42,7 @@ function processRobot(self, enemy)
 
     if self.leftPart ~= nil then
 
-        self.leftPart:process(self)
+        self.leftPart:process(self, enemy)
 
         self.leftPart:collide(self, enemy)
 
@@ -50,7 +50,7 @@ function processRobot(self, enemy)
 
     if self.rightPart ~= nil then
 
-        self.rightPart:process(self)
+        self.rightPart:process(self, enemy)
 
         self.rightPart:collide(self, enemy)
 
@@ -58,7 +58,7 @@ function processRobot(self, enemy)
 
     if self.upPart ~= nil then
 
-        self.upPart:process(self)
+        self.upPart:process(self, enemy)
 
         self.upPart:collide(self, enemy)
 
@@ -66,7 +66,7 @@ function processRobot(self, enemy)
 
     if self.downPart ~= nil then
 
-        self.downPart:process(self)
+        self.downPart:process(self, enemy)
 
         self.downPart:collide(self, enemy)
 
