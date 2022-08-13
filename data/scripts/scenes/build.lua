@@ -25,20 +25,22 @@ end
 function build()
     -- Reset
     sceneAt = "build"
+
+    if pressed("space") then sceneAt = "game" end
     
     setColor(255, 255, 255)
     clear(155, 155, 155)
 
+    setColor(255, 255, 255)
     player:draw()
 
-    setColor(0, 255, 0, 150)
-    love.graphics.rectangle("fill", player.x - 60 - 24, player.y - 24, 48, 48)
+    drawSprite(SLOT_IMAGE, player.x - 80, player.y)
 
-    love.graphics.rectangle("fill", player.x + 60 - 24, player.y - 24, 48, 48)
+    drawSprite(SLOT_IMAGE, player.x + 80, player.y)
 
-    love.graphics.rectangle("fill", player.x - 24, player.y - 24 + 48, 48, 48)
+    drawSprite(SLOT_IMAGE, player.x, player.y + 40)
 
-    love.graphics.rectangle("fill", player.x - 24, player.y - 24 - 48, 48, 48)
+    drawSprite(SLOT_IMAGE, player.x, player.y - 40)
 
     for id, slot in ipairs(partInventory) do
 
@@ -64,6 +66,50 @@ function build()
 
         partChosen:draw({x=xM,y=yM})
 
+        if xM > player.x - 80 - 36 and xM < player.x - 80 + 36 and yM > player.y - 36 and yM < player.y + 36 then
+
+            if mouseJustPressed(1) then
+
+                player.leftPart = newPart(partChosen.name, "left")
+                partChosen = nil
+
+            end
+
+        else
+
+        if xM > player.x + 80 - 36 and xM < player.x + 80 + 36 and yM > player.y - 36 and yM < player.y + 36 then
+
+            if mouseJustPressed(1) then
+
+                player.rightPart = newPart(partChosen.name, "right")
+                partChosen = nil
+
+            end
+
+        else
+
+        if xM > player.x - 36 and xM < player.x + 36 and yM > player.y - 40 - 36 and yM < player.y - 40 + 36 then
+
+            if mouseJustPressed(1) then
+
+                player.upPart = newPart(partChosen.name, "up")
+                partChosen = nil
+
+            end
+
+        else
+
+        if xM > player.x - 36 and xM < player.x + 36 and yM > player.y + 40 - 36 and yM < player.y + 40 + 36 then
+
+            if mouseJustPressed(1) then
+
+                player.downPart = newPart(partChosen.name, "down")
+                partChosen = nil
+
+            end
+
+        end end end end
+
     end
 
     -- Return scene
@@ -81,9 +127,12 @@ function newInventorySlot(part)
 
 end
 
+SLOT_IMAGE = love.graphics.newImage("data/graphics/images/slotIcon.png")
+
 function processInventorySlot(self, xOffset)
 
-    love.graphics.rectangle("fill", xOffset - camera[1] - 32, 536 - camera[2] - 32, 64, 64)
+    setColor(255, 255, 255)
+    drawSprite(SLOT_IMAGE, xOffset, 536)
     self.part:draw({x=xOffset, y=536})
 
 end

@@ -7,6 +7,7 @@ SHADERS = {
 }
 
 SHADERS.POST_PROCESS:send("vignetteMask",love.graphics.newImage("data/graphics/images/shaderMasks/vignette.png"))
+SHADERS.POST_PROCESS:send("xRatio", 600 / 800)
 
 ---------- SPECIFIC SHADER FUNCTIONS
 

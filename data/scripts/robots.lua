@@ -11,6 +11,8 @@ function newRobot(x, y, rotation, control)
         downPart = nil,
 
         draw = drawRobot,
+        drawSmoke = drawRobotSmoke,
+        drawUI = drawRobotUI,
         process = processRobot,
         control = control,
 
@@ -19,12 +21,14 @@ function newRobot(x, y, rotation, control)
 
         rotationVel = 0,
         rotation = rotation,
-        velocity = newVec(0, 0)
+        velocity = newVec(0, 0),
+
+        knockback = newVec(0, 0)
     }
 
 end
 
-function processRobot(self)
+function processRobot(self, enemy)
 
     self.velocity.x = 0
     self.velocity.y = 0
@@ -33,9 +37,14 @@ function processRobot(self)
 
     self.rotation = self.rotation + self.rotationVel * dt
 
+    if self.rotation < -360 then self.rotation = self.rotation + 360 end
+    if self.rotation > 360 then self.rotation = self.rotation - 360 end
+
     if self.leftPart ~= nil then
 
         self.leftPart:process(self)
+
+        self.leftPart:collide(self, enemy)
 
     end
 
@@ -43,11 +52,15 @@ function processRobot(self)
 
         self.rightPart:process(self)
 
+        self.rightPart:collide(self, enemy)
+
     end
 
     if self.upPart ~= nil then
 
         self.upPart:process(self)
+
+        self.upPart:collide(self, enemy)
 
     end
 
@@ -55,42 +68,50 @@ function processRobot(self)
 
         self.downPart:process(self)
 
+        self.downPart:collide(self, enemy)
+
     end
 
-    self.x = self.x + self.velocity.x * dt
-    self.y = self.y + self.velocity.y * dt
+    self.x = self.x + self.velocity.x * dt + self.knockback.x * dt
+    self.y = self.y + self.velocity.y * dt + self.knockback.y * dt
+
+    self.x = clamp(self.x, 0, 800)
+    self.y = clamp(self.y, 0, 600)
+
+    self.knockback.x = lerp(self.knockback.x, 0, dt * 2)
+    self.knockback.y = lerp(self.knockback.y, 0, dt * 2)
 
 end
 
+ROBOT = love.graphics.newImage("data/graphics/images/woodBase.png")
+
 function drawRobot(self)
 
-
-    setColor(0, 100, 255)
-    love.graphics.circle("fill", self.x - camera[1], self.y - camera[2], 36)
     setColor(255, 255, 255)
+    self.leftPart = drawPart(self.leftPart, self)
+    self.rightPart = drawPart(self.rightPart, self)
+    self.upPart = drawPart(self.upPart, self)
+    self.downPart = drawPart(self.downPart, self)
 
-    if self.leftPart ~= nil then
+    setColor(255, 255, 255)
+    drawSprite(ROBOT, self.x, self.y, 1, 1, self.rotation / 180 * 3.14 + 1.57)
 
-        self.leftPart:draw(self)
+end
 
-    end
+function drawRobotSmoke(self)
 
-    if self.rightPart ~= nil then
+    self.leftPart = drawPartSmoke(self.leftPart, self)
+    self.rightPart = drawPartSmoke(self.rightPart, self)
+    self.upPart = drawPartSmoke(self.upPart, self)
+    self.downPart = drawPartSmoke(self.downPart, self)
 
-        self.rightPart:draw(self)
+end
 
-    end
+function drawRobotUI(self)
 
-    if self.upPart ~= nil then
-
-        self.upPart:draw(self)
-
-    end
-
-    if self.downPart ~= nil then
-
-        self.downPart:draw(self)
-
-    end
+    self.leftPart = drawPartUI(self.leftPart, self)
+    self.rightPart = drawPartUI(self.rightPart, self)
+    self.upPart = drawPartUI(self.upPart, self)
+    self.downPart = drawPartUI(self.downPart, self)
 
 end
