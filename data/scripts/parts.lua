@@ -160,7 +160,7 @@ function newTNT(tier) -- TNT
 
             "Very low hp, very high damage, big splash radius",
             "Hp " .. 1,
-            "Damage " .. 100 .. " (speed adds damage)"
+            "Damage " .. tostring(100 + 50 * tier) .. " (speed adds damage)"
 
         }
 
@@ -190,9 +190,9 @@ function processTNT(self, robot, enemy)
     
                 local enemyPartPos = newVec(enemy.x + enemyPart.offset.x, enemy.y + enemyPart.offset.y)
     
-                if newVec(partPos.x - enemyPartPos.x, partPos.y - enemyPartPos.y):getLen() < 128 then
+                if newVec(partPos.x - enemyPartPos.x, partPos.y - enemyPartPos.y):getLen() < 180 then
 
-                    enemyPart.hp = enemyPart.hp - self.damage * 0.75
+                    enemyPart.hp = enemyPart.hp - self.damage * 0.5
 
                 end
 

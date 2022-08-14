@@ -16,38 +16,36 @@ function gameReload()
     if enemyParts == nil then
 
         enemyParts = {"wheel", "spike"}
-        enemyPartLevels = {3, 0}
 
     else
 
         table.insert(enemyParts, parts[love.math.random(1, #parts)])
-        table.insert(enemyPartLevels, love.math.random(0, math.min(score, 3)))
 
     end
 
     taken = {}
 
     local index = love.math.random(1, #enemyParts); taken[index] = true
-    opponent.leftPart = newPart(enemyParts[index], "left", enemyPartLevels[index])
+    opponent.leftPart = newPart(enemyParts[index], "left", love.math.random(0, math.min(score, 3)))
 
     while taken[index] == true and not (#enemyParts < 2) do
         
         index = love.math.random(1, #enemyParts)
-        opponent.rightPart = newPart(enemyParts[index], "right", enemyPartLevels[index])
+        opponent.rightPart = newPart(enemyParts[index], "right", love.math.random(0, math.min(score, 3)))
 
     end taken[index] = true
 
     while taken[index] == true and not (#enemyParts < 3) do
 
         index = love.math.random(1, #enemyParts)
-        opponent.upPart = newPart(enemyParts[index], "up", enemyPartLevels[index])
+        opponent.upPart = newPart(enemyParts[index], "up", love.math.random(0, math.min(score, 3)))
 
     end taken[index] = true
 
     while taken[index] == true and not (#enemyParts < 4) do
 
         index = love.math.random(1, #enemyParts)
-        opponent.downPart = newPart(enemyParts[index], "down", enemyPartLevels[index])
+        opponent.downPart = newPart(enemyParts[index], "down", love.math.random(0, math.min(score, 3)))
 
     end taken[index] = true
 
@@ -70,6 +68,8 @@ function gameReload()
     endAnimation = 0
 
     CANNON_BALL = love.graphics.newImage("data/graphics/images/cannonBall.png")
+
+    finished = false
 
 end
 
@@ -165,6 +165,19 @@ function game()
 
     if opponent.leftPart == nil and opponent.rightPart == nil and opponent.upPart == nil and opponent.downPart == nil then
 
+        if finished == false then
+
+            finished = true
+
+            local particles = newParticleSystem(opponent.x, opponent.y, deepcopyTable(EXPLOSION))
+            particles.ticks = 1
+
+            table.insert(particleSystemsOver, particles)
+            shake(16, 4, 0.2)
+            shock(opponent.x, opponent.y, 0.8, 0.08, 0.4)
+            
+        end
+
         endAnimation = endAnimation + dt
 
         transition = endAnimation / 1.5
@@ -178,6 +191,19 @@ function game()
         end
 
     else if player.leftPart == nil and player.rightPart == nil and player.upPart == nil and player.downPart == nil then
+
+        if finished == false then
+
+            finished = true
+
+            local particles = newParticleSystem(player.x, player.y, deepcopyTable(EXPLOSION))
+            particles.ticks = 1
+
+            table.insert(particleSystemsOver, particles)
+            shake(16, 4, 0.2)
+            shock(player.x, player.y, 0.8, 0.08, 0.4)
+            
+        end
 
         endAnimation = endAnimation + dt
 
