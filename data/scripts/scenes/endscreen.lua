@@ -59,6 +59,9 @@ function endscreen()
     drawSprite(SMALL_COG, 800, 600, 2, 2, cogRot)
     drawSprite(SMALL_COG, 0, 0, 2, 2, cogRot)
 
+    love.graphics.setColor(1,1,1,1)
+    love.graphics.draw(MOUSE,xM,yM,0,SPRSCL * mouseScale,SPRSCL * mouseScale)
+
     -- Return scene
     return sceneAt
 end

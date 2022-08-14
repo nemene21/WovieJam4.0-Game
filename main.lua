@@ -20,7 +20,7 @@ function love.load()
     require "init"
 
     -- Mouse
-    --love.mouse.setVisible(false)
+    love.mouse.setVisible(false)
     mouseMode = "pointer"
     mouse = {["pointer"] = love.graphics.newImage("data/graphics/images/mouse/pointer.png")}
     mouseOffset = {0,0}
@@ -38,6 +38,9 @@ function love.load()
     transition = 1
 
     TIME_SCALE = 1
+
+    MOUSE = love.graphics.newImage("data/graphics/images/mouse.png")
+    mouseScale = 1 
 end
 
 -- Play scenes
@@ -87,8 +90,8 @@ function love.draw()
     processAllLights()
 
     -- Mouse
-    -- love.graphics.setColor(1,1,1,1)
-    -- love.graphics.draw(mouse[mouseMode],xM,yM,0,SPRSCL,SPRSCL)
+    mouseScale = lerp(mouseScale, 1, dt * 12)
+    if mouseJustPressed(1) then mouseScale = 0.75 end
 
     -- Post processing
     love.graphics.setShader(SHADERS.POST_PROCESS)

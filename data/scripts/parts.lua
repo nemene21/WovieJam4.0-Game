@@ -192,7 +192,7 @@ function processTNT(self, robot, enemy)
     
                 local enemyPartPos = newVec(enemy.x + enemyPart.offset.x, enemy.y + enemyPart.offset.y)
     
-                if newVec(partPos.x - enemyPartPos.x, partPos.y - enemyPartPos.y):getLen() < 164 then
+                if newVec(partPos.x - enemyPartPos.x, partPos.y - enemyPartPos.y):getLen() < 196 then
 
                     enemyPart.hp = enemyPart.hp - self.damage * 0.5
 
@@ -342,7 +342,7 @@ function processGun(self, robot, enemy)
 
     self.offset = self.offset:rotate(robot.rotationVel * dt)
 
-    self.shootTimer = self.shootTimer - dt * (self.firerate + boolToInt(overdrive and robot == player) * 2)
+    self.shootTimer = self.shootTimer - dt * (self.firerate + boolToInt(overdrive and robot == player) * 10)
 
     if self.shootTimer < 0 then
 

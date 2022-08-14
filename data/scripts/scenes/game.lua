@@ -19,36 +19,48 @@ function gameReload()
 
     else
 
-        table.insert(enemyParts, parts[love.math.random(1, #parts)])
+        table.insert(enemyParts, parts[love.math.random(1, #parts - 1 + boolToInt(score > 5))])
 
     end
 
-    
-    taken = {}
+    local movingNumber = 0
 
-    local index = love.math.random(1, #enemyParts); taken[index] = true
-    opponent.leftPart = newPart(enemyParts[index], "left", love.math.random(0, math.min(score * 0.33, 3)))
+    while movingNumber == 0 do
+        taken = {}
 
-    while taken[index] == true and not (#enemyParts < 2) and enemyPart[index].name ~= "rocketEngine" do
-        
-        index = love.math.random(1, #enemyParts)
-        opponent.rightPart = newPart(enemyParts[index], "right", love.math.random(0, math.min(score * 0.33, 3)))
+        local index = love.math.random(1, #enemyParts); taken[index] = true
+        opponent.rightPart = newPart(enemyParts[index], "right", 0, math.min(score * 0.33, 3))
 
-    end taken[index] = true
+        while taken[index] == true and not (#enemyParts < 2) and enemyParts[index].name ~= "rocketEngine" do
+            
+            index = love.math.random(1, #enemyParts)
+            opponent.leftPart = newPart(enemyParts[index], "left", 0, math.min(score * 0.33, 3))
 
-    while taken[index] == true and not (#enemyParts < 3) and enemyPart[index].name ~= "rocketEngine" do
+        end taken[index] = true
 
-        index = love.math.random(1, #enemyParts)
-        opponent.upPart = newPart(enemyParts[index], "up", love.math.random(0, math.min(score * 0.33, 3)))
+        while taken[index] == true and not (#enemyParts < 3) and enemyParts[index].name ~= "rocketEngine" do
 
-    end taken[index] = true
+            index = love.math.random(1, #enemyParts)
+            opponent.upPart = newPart(enemyParts[index], "up", 0, math.min(score * 0.33, 3))
 
-    while taken[index] == true and not (#enemyParts < 4) and enemyPart[index].name ~= "rocketEngine" do
+        end taken[index] = true
 
-        index = love.math.random(1, #enemyParts)
-        opponent.downPart = newPart(enemyParts[index], "down", love.math.random(0, math.min(score * 0.33, 3)))
+        while taken[index] == true and not (#enemyParts < 4) and enemyParts[index].name ~= "rocketEngine" do
 
-    end taken[index] = true
+            index = love.math.random(1, #enemyParts)
+            opponent.downPart = newPart(enemyParts[index], "down", 0, math.min(score * 0.33, 3))
+
+        end taken[index] = true
+
+        if opponent.leftPart ~= nil then movingNumber = movingNumber + boolToInt(opponent.leftPart.name == "rocketEngine" or opponent.leftPart.name == "wheel") end
+
+        if opponent.rightPart ~= nil then movingNumber = movingNumber + boolToInt(opponent.rightPart.name == "rocketEngine" or opponent.rightPart.name == "wheel") end
+
+        if opponent.upPart ~= nil then movingNumber = movingNumber + boolToInt(opponent.upPart.name == "rocketEngine" or opponent.upPart.name == "wheel") end
+
+        if opponent.downPart ~= nil then movingNumber = movingNumber + boolToInt(opponent.downPart.name == "rocketEngine" or opponent.downPart.name == "wheel") end
+
+    end
 
     opponent.rotationVel = 60
 
@@ -86,11 +98,11 @@ end
 
 function game()
 
-    if overdriveActivate > 100 then
+    if overdriveActivate > 150 then
 
         if overdrive == false then
 
-            overdriveEndTimer = 2.5
+            overdriveEndTimer = 2
 
         end
 
@@ -101,6 +113,8 @@ function game()
         if overdriveEndTimer < 0 then overdriveActivate = 0 end
 
     else
+
+        overdriveActivate = math.max(overdriveActivate - dt * 4, 0)
 
         overdrive = false
 
@@ -200,7 +214,7 @@ function game()
 
     if not overdrive then
 
-        love.graphics.rectangle("fill", player.x - 24, player.y - 80, 48 * math.min(1, overdriveActivate / 100), 12)
+        love.graphics.rectangle("fill", player.x - 24, player.y - 80, 48 * math.min(1, overdriveActivate / 150), 12)
 
     else
 
@@ -208,7 +222,7 @@ function game()
 
         setColor(lerp(150, 255, effect),lerp(30, 255, effect),lerp(20, 255, effect),255 * boolToInt(sceneAt == "game"))
 
-        love.graphics.rectangle("fill", player.x - 24, player.y - 80, 48 * overdriveEndTimer / 2.5, 12)
+        love.graphics.rectangle("fill", player.x - 24, player.y - 80, 48 * overdriveEndTimer / 2, 12)
 
     end
 

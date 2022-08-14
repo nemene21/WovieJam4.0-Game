@@ -21,7 +21,7 @@ function buildReload()
         
         end)
 
-        partInventory = {newInventorySlot("wheel", 0), newInventorySlot("wheel", 0), newInventorySlot("spike", 0)}
+        partInventory = {newInventorySlot("wheel", 0), newInventorySlot("wheel", 0), newInventorySlot("spike", 0), newInventorySlot("spike", 0)}
 
         score = 0
 
@@ -302,6 +302,9 @@ function build()
         placeLostScale4 = lerp(placeLostScale4, 1, dt * 12)
 
     end
+
+    love.graphics.setColor(1,1,1,1)
+    love.graphics.draw(MOUSE,xM,yM,0,SPRSCL * mouseScale,SPRSCL * mouseScale)
 
     -- Return scene
     return sceneAt
