@@ -11,7 +11,7 @@ function buildReload()
         
         end)
 
-        partInventory = {newInventorySlot("wheel", 0), newInventorySlot("wheel", 0), newInventorySlot("spike", 0)}
+        partInventory = {newInventorySlot("wheel", 0), newInventorySlot("wheel", 0), newInventorySlot("TNT", 0)}
 
         score = 0
 

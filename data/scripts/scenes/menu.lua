@@ -9,7 +9,7 @@ function menuReload()
 
     cogRot = 0
     cogRotLerpTo = 0
-    cogRotIncreaseTimer = 0
+    cogRotIncreaseTimer = 1
     
 end
 

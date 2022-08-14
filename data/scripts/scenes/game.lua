@@ -69,6 +69,8 @@ function gameReload()
 
     endAnimation = 0
 
+    CANNON_BALL = love.graphics.newImage("data/graphics/images/cannonBall.png")
+
 end
 
 function gameDie()
@@ -101,9 +103,8 @@ function game()
         bullet.x = bullet.x + bullet.vel.x * dt
         bullet.y = bullet.y + bullet.vel.y * dt
 
-        setColor(255, 255, 0)
-        love.graphics.circle("fill", bullet.x - camera[1], bullet.y - camera[2], 8)
         setColor(255, 255, 255)
+        drawSprite(CANNON_BALL, bullet.x, bullet.y, 1, 1, bullet.vel:getRot() / 180 * 3.14)
 
         if bullet.x < -100 or bullet.x > 900 or bullet.y < - 100 or bullet.y > 700 then
 

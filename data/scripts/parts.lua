@@ -132,6 +132,91 @@ function drawSpike(self, robot)
 
 end
 
+EXPLOSION = loadJson("data/graphics/particles/explosion.json")
+
+function newTNT(tier) -- TNT
+
+    return {
+
+        process = processTNT,
+        draw = drawTNT,
+
+        distance = 57,
+
+        maxHp = 0.0001,
+        hp = 0.0001,
+
+        damage = 100 + 50 * tier,
+        
+        tier = tier,
+
+        barLerp = 1,
+
+        fancyName = "TNT " .. romanLetters[tier + 1],
+
+        particles = newParticleSystem(0, 0, deepcopyTable(EXPLOSION)),
+
+        tooltipMessages = {
+
+            "Very low hp, very high damage, big splash radius",
+            "Hp " .. 1,
+            "Damage " .. 100 .. " (speed adds damage)"
+
+        }
+
+    }
+
+end
+
+TNT = {
+    love.graphics.newImage("data/graphics/images/woodSpike.png"),
+    love.graphics.newImage("data/graphics/images/ironSpike.png"),
+    love.graphics.newImage("data/graphics/images/goldSpike.png"),
+    love.graphics.newImage("data/graphics/images/diamondSpike.png")
+}
+
+function processTNT(self, robot, enemy)
+
+    if self.hp <= 0 then
+
+        local partPos = newVec(robot.x + self.offset.x, robot.y + self.offset.y)
+
+        shock(partPos.x, partPos.y, 0.4, 0.075, 0.4)
+        shake(16, 3, 0.2)
+
+        for id, enemyPart in ipairs({enemy.leftPart or "none", enemy.rightPart or "none", enemy.upPart or "none", enemy.downPart or "none"}) do
+    
+            if enemyPart ~= "none" then
+    
+                local enemyPartPos = newVec(enemy.x + enemyPart.offset.x, enemy.y + enemyPart.offset.y)
+    
+                if newVec(partPos.x - enemyPartPos.x, partPos.y - enemyPartPos.y):getLen() < 128 then
+
+                    enemyPart.hp = enemyPart.hp - self.damage * 0.75
+
+                end
+
+            end
+
+        end
+
+    end
+
+    self.particles.x = robot.x + self.offset.x
+    self.particles.y = robot.y + self.offset.y
+
+    self.offset = self.offset:rotate(robot.rotationVel * dt)
+
+end
+
+function drawTNT(self, robot)
+
+    local effect = 1 - self.hp / self.maxHp
+
+    drawSprite(TNT[self.tier + 1], robot.x + (self.offset.x or 0), robot.y + (self.offset.y or 0), 1 + self.iFrames / 0.2 * 0.15, 1 - self.iFrames / 0.2 * 0.15, ((robot.rotation or 0) - (self.rotation or 0)) / 180 * 3.14 + 1.57 + math.sin(globalTimer * 15 + (self.rotation or 0)) * 0.15 * effect)
+
+end
+
 ROCKET_ENGINE_FIRE = loadJson("data/graphics/particles/rocketEngine.json")
 
 function newRocketEngine(tier) -- Rocket engine
@@ -239,6 +324,7 @@ function newGun(tier) -- Rocket engine
 
             "Shoots in its direction",
             "Hp " .. tostring(35 + 15 * tier),
+            "Damage " .. tostring(6),
             "Firerate x" .. tostring(1 + 0.2 * tier)
 
         }
@@ -312,7 +398,8 @@ PARTS = {
 wheel = newWheel,
 spike = newSpike,
 rocketEngine = newRocketEngine,
-gun = newGun
+gun = newGun,
+TNT = newTNT
 
 }
 
