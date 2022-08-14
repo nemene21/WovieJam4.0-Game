@@ -3,17 +3,17 @@ function gameReload()
     
     opponent = newRobot(200, 400, 0, function(self)
     
-        self.rotationVel = lerp(self.rotationVel, (newVec(player.x - self.x, player.y - self.y):getRot() - self.rotation) * 10, dt)
+        self.rotationVel = ((newVec(player.x - self.x, player.y - self.y):getRot() + love.math.noise(globalTimer) * 90) - self.rotation) / dt
 
-        self.tryingToMove = clamp(love.math.noise(globalTimer) + 1, -1, 1) *  boolToInt(globalTimer > 1.4)
+        self.tryingToMove = clamp(love.math.noise(globalTimer) + 0.65, -1, 1) *  boolToInt(globalTimer > 1.4)
     
     end)
 
-    parts = {"wheel", "spike", "gun", "rocketEngine"}
-
-    score = 0
+    parts = {"wheel", "spike", "gun", "rocketEngine", "TNT"}
 
     if enemyParts == nil then
+
+        score = 0
 
         enemyParts = {"wheel", "spike"}
 
@@ -23,29 +23,30 @@ function gameReload()
 
     end
 
+    
     taken = {}
 
     local index = love.math.random(1, #enemyParts); taken[index] = true
-    opponent.leftPart = newPart(enemyParts[index], "left", love.math.random(0, math.min(score, 3)))
+    opponent.leftPart = newPart(enemyParts[index], "left", love.math.random(0, math.min(score * 0.33, 3)))
 
-    while taken[index] == true and not (#enemyParts < 2) do
+    while taken[index] == true and not (#enemyParts < 2) and enemyPart[index].name ~= "rocketEngine" do
         
         index = love.math.random(1, #enemyParts)
-        opponent.rightPart = newPart(enemyParts[index], "right", love.math.random(0, math.min(score, 3)))
+        opponent.rightPart = newPart(enemyParts[index], "right", love.math.random(0, math.min(score * 0.33, 3)))
 
     end taken[index] = true
 
-    while taken[index] == true and not (#enemyParts < 3) do
+    while taken[index] == true and not (#enemyParts < 3) and enemyPart[index].name ~= "rocketEngine" do
 
         index = love.math.random(1, #enemyParts)
-        opponent.upPart = newPart(enemyParts[index], "up", love.math.random(0, math.min(score, 3)))
+        opponent.upPart = newPart(enemyParts[index], "up", love.math.random(0, math.min(score * 0.33, 3)))
 
     end taken[index] = true
 
-    while taken[index] == true and not (#enemyParts < 4) do
+    while taken[index] == true and not (#enemyParts < 4) and enemyPart[index].name ~= "rocketEngine" do
 
         index = love.math.random(1, #enemyParts)
-        opponent.downPart = newPart(enemyParts[index], "down", love.math.random(0, math.min(score, 3)))
+        opponent.downPart = newPart(enemyParts[index], "down", love.math.random(0, math.min(score * 0.33, 3)))
 
     end taken[index] = true
 
@@ -71,6 +72,12 @@ function gameReload()
 
     finished = false
 
+    overdrive = false
+    overdriveActivate = 0
+    overdriveEndTimer = 0
+
+    overdriveParticles = newParticleSystem(0, 0, loadJson("data/graphics/particles/overdrive.json"))
+
 end
 
 function gameDie()
@@ -78,6 +85,27 @@ function gameDie()
 end
 
 function game()
+
+    if overdriveActivate > 100 then
+
+        if overdrive == false then
+
+            overdriveEndTimer = 2.5
+
+        end
+
+        overdrive = true
+
+        overdriveEndTimer = overdriveEndTimer - dt
+
+        if overdriveEndTimer < 0 then overdriveActivate = 0 end
+
+    else
+
+        overdrive = false
+
+    end
+
     -- Reset
     sceneAt = "game"
     
@@ -152,8 +180,40 @@ function game()
     setColor(255, 255, 255)
     drawSprite(PLAYER_ARROW, player.x, player.y - 36 + math.sin(globalTimer * 5) * 8)
 
+    overdriveParticles.spawning = overdrive
+    if overdrive then
+
+        overdriveParticles.x = player.x
+        overdriveParticles.y = player.y
+
+    end
+
+    overdriveParticles:process()
+
     opponent:drawUI()
     player:drawUI()
+
+    setColor(0,0,0,155 * boolToInt(sceneAt == "game"))
+    love.graphics.rectangle("fill", player.x - 24, player.y - 80, 48, 12)
+
+    setColor(150,30,20,255 * boolToInt(sceneAt == "game"))
+
+    if not overdrive then
+
+        love.graphics.rectangle("fill", player.x - 24, player.y - 80, 48 * math.min(1, overdriveActivate / 100), 12)
+
+    else
+
+        local effect = math.abs(math.sin(globalTimer * 20))
+
+        setColor(lerp(150, 255, effect),lerp(30, 255, effect),lerp(20, 255, effect),255 * boolToInt(sceneAt == "game"))
+
+        love.graphics.rectangle("fill", player.x - 24, player.y - 80, 48 * overdriveEndTimer / 2.5, 12)
+
+    end
+
+    setColor(0,0,0,255 * boolToInt(sceneAt == "game"))
+    love.graphics.rectangle("line", player.x - 24, player.y - 80, 48, 12)
 
     local kill = {}                                            -- Draw particles over
     for id,P in ipairs(particleSystemsOver) do
@@ -211,7 +271,7 @@ function game()
 
         if endAnimation > 1.5 then
 
-            sceneAt = "menu"
+            sceneAt = "endscreen"
 
         end
 

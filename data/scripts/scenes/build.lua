@@ -4,14 +4,24 @@ function buildReload()
     if player == nil then
 
         player = newRobot(400, 300, 0, function(self)
-    
-            self.rotationVel = lerp(self.rotationVel, (boolToInt(pressed("d")) - boolToInt(pressed("a"))) * 360, dt * 4)
-    
-            self.tryingToMove = boolToInt(pressed("w")) - boolToInt(pressed("s"))
+            
+            if not overdrive then
+
+                self.rotationVel = lerp(self.rotationVel, (boolToInt(pressed("d")) - boolToInt(pressed("a"))) * 360, dt * 4)
+
+                self.tryingToMove = boolToInt(pressed("w")) - boolToInt(pressed("s"))
+
+            else
+
+                self.rotationVel = lerp(self.rotationVel, 720, dt * 8)
+
+                self.tryingToMove = 4
+
+            end
         
         end)
 
-        partInventory = {newInventorySlot("wheel", 0), newInventorySlot("wheel", 0), newInventorySlot("TNT", 0)}
+        partInventory = {newInventorySlot("wheel", 0), newInventorySlot("wheel", 0), newInventorySlot("spike", 0)}
 
         score = 0
 

@@ -22,7 +22,7 @@ require "data.scripts.robots"
 require "data.scripts.parts"
 
 -- Scenes
-require "data.scripts.scenes.blank"; require "data.scripts.scenes.game"; require "data.scripts.scenes.build"; require "data.scripts.scenes.menu"
+require "data.scripts.scenes.blank"; require "data.scripts.scenes.game"; require "data.scripts.scenes.build"; require "data.scripts.scenes.menu"; require "data.scripts.scenes.endscreen"
 
 scenes = {
 
@@ -32,6 +32,8 @@ game   = {game, gameReload, gameDie},
 
 build  = {build, buildReload, buildDie},
 
-menu = {menu, menuReload, menuDie}
+menu = {menu, menuReload, menuDie},
+
+endscreen = {endscreen, endscreenReload, endscreenDie}
 
 }

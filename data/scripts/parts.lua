@@ -177,6 +177,8 @@ TNT = {
 
 function processTNT(self, robot, enemy)
 
+    if overdrive and robot == player then self.hp = - 1 end
+
     if self.hp <= 0 then
 
         local partPos = newVec(robot.x + self.offset.x, robot.y + self.offset.y)
@@ -190,7 +192,7 @@ function processTNT(self, robot, enemy)
     
                 local enemyPartPos = newVec(enemy.x + enemyPart.offset.x, enemy.y + enemyPart.offset.y)
     
-                if newVec(partPos.x - enemyPartPos.x, partPos.y - enemyPartPos.y):getLen() < 180 then
+                if newVec(partPos.x - enemyPartPos.x, partPos.y - enemyPartPos.y):getLen() < 164 then
 
                     enemyPart.hp = enemyPart.hp - self.damage * 0.5
 
@@ -325,7 +327,7 @@ function newGun(tier) -- Rocket engine
 
             "Shoots in its direction",
             "Hp " .. tostring(35 + 15 * tier),
-            "Damage " .. tostring(6),
+            "Damage " .. tostring(8),
             "Firerate x" .. tostring(1 + 0.2 * tier)
 
         }
@@ -340,7 +342,7 @@ function processGun(self, robot, enemy)
 
     self.offset = self.offset:rotate(robot.rotationVel * dt)
 
-    self.shootTimer = self.shootTimer - dt * self.firerate
+    self.shootTimer = self.shootTimer - dt * (self.firerate + boolToInt(overdrive and robot == player) * 2)
 
     if self.shootTimer < 0 then
 
@@ -367,7 +369,7 @@ function processGun(self, robot, enemy)
             x = robot.x + (self.offset.x or 0) * 2,
             y = robot.y + (self.offset.y or 0) * 2,
 
-            damage = 7
+            damage = 8
 
         })
 
@@ -479,9 +481,19 @@ function collidePart(part, robot, enemy)
 
                 part.iFrames = 0.4
 
-                part.hp = part.hp - 10 * enemySpeedFactor * (enemyPart.damage or 1) * (enemyPart.shield or 1)
+                part.hp = part.hp - 10 * enemySpeedFactor * (enemyPart.damage or 1) * (part.shield or 1)
 
-                enemyPart.hp = enemyPart.hp - 10 * selfSpeedFactor * (part.damage or 1) * (part.shield or 1)
+                if robot == player then
+
+                    overdriveActivate = overdriveActivate + 10 * enemySpeedFactor * (enemyPart.damage or 1) * (part.shield or 1)
+
+                else
+                    
+                    overdriveActivate = overdriveActivate + 10 * selfSpeedFactor * (part.damage or 1) * (enemyPart.shield or 1)
+                
+                end
+
+                enemyPart.hp = enemyPart.hp - 10 * selfSpeedFactor * (part.damage or 1) * (enemyPart.shield or 1)
 
                 local newKnockback = newVec(momentum * 600, 0):rotate(newVec(robot.x - enemy.x, robot.y - enemy.y):getRot() + 180)
 
