@@ -21,7 +21,7 @@ function gameReload()
     else
 
         table.insert(enemyParts, parts[love.math.random(1, #parts)])
-        table.insert(enemyPartLevels, love.math.random(math.floor(math.min(3 * score / 1.5 * 0.5, 3)), math.floor(math.min(3 * score / 1.5, 3))))
+        table.insert(enemyPartLevels, love.math.random(0, math.min(score, 3)))
 
     end
 

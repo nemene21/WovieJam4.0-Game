@@ -46,6 +46,10 @@ function buildReload()
 
     scrollVel = 0
     scrollParts = 0
+
+    trashSlotScale = 1
+
+    DONE = newButton(400, 150, "DONE")
     
 end
 
@@ -59,6 +63,18 @@ function build()
     
     setColor(100, 100, 100)
     drawSprite(BG, 400, 300)
+
+    if DONE:process() then
+        
+        sceneAt = "game"
+        
+        if partChosen ~= nil then
+            table.insert(partInventory, newInventorySlot(partChosen.name, partChosen.tier))
+
+            partChosen = nil
+        end
+    
+    end
     
     scrollVel = lerp(scrollVel, 0, dt * 6)
     scrollVel = scrollVel + getScroll() * 200
@@ -140,6 +156,29 @@ function build()
     else
 
         inventorySlotPlus.scale = lerp(inventorySlotPlus.scale, 1, dt * 12)
+
+    end
+
+    -- Slot to trash items
+
+    setColor(255, 255, 255)
+    drawSprite(SLOT_IMAGE, 64, 64, trashSlotScale, trashSlotScale)
+
+    if xM > 64 - 36 and xM < 64 + 36 and yM > 64 - 36 and yM < 64 + 36 and not alreadyPressed then
+
+        trashSlotScale = lerp(trashSlotScale, 1.2, dt * 12)
+
+        if mouseJustPressed(1) then
+
+            trashSlotScale = 1.45
+
+            partChosen = nil
+
+        end
+
+    else
+
+        trashSlotScale = lerp(trashSlotScale, 1, dt * 12)
 
     end
 
@@ -252,18 +291,6 @@ function build()
 
         placeLostScale4 = lerp(placeLostScale4, 1, dt * 12)
 
-    end
-
-    if pressed("space") then
-        
-        sceneAt = "game"
-        
-        if partChosen ~= nil then
-            table.insert(partInventory, newInventorySlot(partChosen.name, partChosen.tier))
-
-            partChosen = nil
-        end
-    
     end
 
     -- Return scene

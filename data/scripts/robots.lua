@@ -83,7 +83,7 @@ function processRobot(self, enemy)
 
 end
 
-ROBOT = love.graphics.newImage("data/graphics/images/woodBase.png")
+ROBOT = love.graphics.newImage("data/graphics/images/ironBase.png")
 
 function drawRobot(self)
 
