@@ -6,7 +6,7 @@ function elementIndex(table,element) -- returns an id of an element in a table, 
         if E == element then return id end
     end
 
-    return -1
+    return nil
 end
 
 function idInTable(table,id) return table[id] ~= nil end

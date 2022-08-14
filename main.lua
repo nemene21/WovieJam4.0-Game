@@ -26,7 +26,7 @@ function love.load()
     mouseOffset = {0,0}
 
     -- Set default scene (the first one)
-    scene = "build"
+    scene = "menu"
     scenes[scene][2]()
 
     -- Set joysticks
@@ -106,6 +106,8 @@ function love.draw()
     -- Reset input
     lastKeyPressed = "none"; lastMouseButtonPressed = -1
     for id,J in pairs(JOYSTICKS) do JOYSTICK_LAST_PRESSES[id] = "none" end
+
+    scroll = 0
 end
 
 -- Display resizing
@@ -142,3 +144,5 @@ function love.joystickpressed(joystick,button)
     id = elementIndex(JOYSTICKS,joystick)
     JOYSTICK_LAST_PRESSES[id] = button
 end
+
+function love.wheelmoved(x,y) scroll = y end

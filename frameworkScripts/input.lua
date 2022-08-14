@@ -21,6 +21,9 @@ function mouseJustPressed(button) return lastMouseButtonPressed == button end --
 -- Updating the input (unimportant, not for use)
 function setMouseJustPressed(button) lastMouseButtonPressed = button end
 
+scroll = 0
+function getScroll() return scroll end
+
 -- JOYSTICK
 
 function joystickPressed(id,button) return JOYSTICKS[id]:isGamepadDown(button) end

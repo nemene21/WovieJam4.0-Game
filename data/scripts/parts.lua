@@ -1,4 +1,11 @@
 
+romanLetters = {
+    "I",
+    "II",
+    "III",
+    "IV"
+}
+
 WHEEL_SMOKE = loadJson("data/graphics/particles/wheelSmoke.json")
 
 function newWheel(tier) -- Wheel
@@ -14,12 +21,24 @@ function newWheel(tier) -- Wheel
 
         rotation = 90,
 
+        fancyName = "Wheel " .. romanLetters[tier + 1],
+
         particles = newParticleSystem(0, 0, deepcopyTable(WHEEL_SMOKE)),
 
-        maxHp = 75,
-        hp = 75,
+        maxHp = 75 + 20 * tier,
+        hp = 75 + 20 * tier,
 
-        barLerp = 1
+        tier = tier,
+
+        barLerp = 1,
+
+        tooltipMessages = {
+
+            "Makes the robot move forward and back",
+            "Hp " .. tostring(75 + 20 * tier),
+            "Speed 1"
+
+        }
 
     }
 
@@ -45,13 +64,18 @@ function processWheel(self, robot, enemy)
 
 end
 
-WHEEL = love.graphics.newImage("data/graphics/images/woodWheel.png")
+WHEEL = {
+    love.graphics.newImage("data/graphics/images/woodWheel.png"),
+    love.graphics.newImage("data/graphics/images/ironWheel.png"),
+    love.graphics.newImage("data/graphics/images/goldWheel.png"),
+    love.graphics.newImage("data/graphics/images/diamondWheel.png")
+}
 
 function drawWheel(self, robot)
 
     local effect = 1 - self.hp / self.maxHp
 
-    drawSprite(WHEEL, robot.x + (self.offset.x or 0), robot.y + (self.offset.y or 0), 1 - self.iFrames / 0.2 * 0.15, 1 - self.iFrames / 0.2 * 0.15, ((robot.rotation or 0) - (self.rotation or 0)) / 180 * 3.14 + math.sin(globalTimer * 15 + (self.rotation or 0)) * 0.15 * effect)
+    drawSprite(WHEEL[self.tier + 1], robot.x + (self.offset.x or 0), robot.y + (self.offset.y or 0), 1 - self.iFrames / 0.2 * 0.15, 1 - self.iFrames / 0.2 * 0.15, ((robot.rotation or 0) - (self.rotation or 0)) / 180 * 3.14 + math.sin(globalTimer * 15 + (self.rotation or 0)) * 0.15 * effect)
 
 end
 
@@ -65,17 +89,34 @@ function newSpike(tier) -- Spike
         distance = 57,
 
         maxHp = 100 + 20 * tier,
-        hp = 100,
+        hp = 100 + 20 * tier,
 
         damage = 3 + tier,
+        
+        tier = tier,
 
-        barLerp = 1
+        barLerp = 1,
+
+        fancyName = "Spike " .. romanLetters[tier + 1],
+
+        tooltipMessages = {
+
+            "Does a lot more damage on impact",
+            "Hp " .. tostring(100 + 20 * tier),
+            "Damage " .. tostring(10 * (3 + tier)) .. " (speed adds damage)"
+
+        }
 
     }
 
 end
 
-WOOD_SPIKE = love.graphics.newImage("data/graphics/images/woodSpike.png")
+SPIKE = {
+    love.graphics.newImage("data/graphics/images/woodSpike.png"),
+    love.graphics.newImage("data/graphics/images/ironSpike.png"),
+    love.graphics.newImage("data/graphics/images/goldSpike.png"),
+    love.graphics.newImage("data/graphics/images/diamondSpike.png")
+}
 
 function processSpike(self, robot, enemy)
 
@@ -87,7 +128,7 @@ function drawSpike(self, robot)
 
     local effect = 1 - self.hp / self.maxHp
 
-    drawSprite(WOOD_SPIKE, robot.x + (self.offset.x or 0), robot.y + (self.offset.y or 0), 1 + self.iFrames / 0.2 * 0.15, 1 - self.iFrames / 0.2 * 0.15, ((robot.rotation or 0) - (self.rotation or 0)) / 180 * 3.14 + 1.57 + math.sin(globalTimer * 15 + (self.rotation or 0)) * 0.15 * effect)
+    drawSprite(SPIKE[self.tier + 1], robot.x + (self.offset.x or 0), robot.y + (self.offset.y or 0), 1 + self.iFrames / 0.2 * 0.15, 1 - self.iFrames / 0.2 * 0.15, ((robot.rotation or 0) - (self.rotation or 0)) / 180 * 3.14 + 1.57 + math.sin(globalTimer * 15 + (self.rotation or 0)) * 0.15 * effect)
 
 end
 
@@ -97,6 +138,8 @@ function newRocketEngine(tier) -- Rocket engine
 
     return {
 
+        tier = tier,
+
         process = processRocketEngine,
         draw = drawRocketEngine,
 
@@ -104,14 +147,22 @@ function newRocketEngine(tier) -- Rocket engine
 
         distance = 45,
 
-        rotation = 90,
-
         particles = newParticleSystem(0, 0, deepcopyTable(ROCKET_ENGINE_FIRE)),
 
-        maxHp = 35,
+        maxHp = 35 + 15 * tier,
         hp = 35 + 15 * tier,
 
-        barLerp = 1
+        barLerp = 1,
+
+        fancyName = "Rocket Engine " .. romanLetters[tier + 1],
+
+        tooltipMessages = {
+
+            "Makes the robot move forward",
+            "Hp " .. tostring(35 + 15 * tier),
+            "Speed 2"
+
+        }
 
     }
 
@@ -121,7 +172,7 @@ function processRocketEngine(self, robot, enemy)
 
     self.offset = self.offset:rotate(robot.rotationVel * dt)
 
-    self.movement = lerp(self.movement, math.max(robot.tryingToMove, 0) * 650, dt * 5)
+    self.movement = lerp(self.movement, math.max(robot.tryingToMove, 0) * 400, dt * 5)
 
     local newRocketVel = newVec(self.movement, 0)
     newRocketVel:rotate(self.offset:getRot() + 180)
@@ -142,13 +193,20 @@ function processRocketEngine(self, robot, enemy)
 
 end
 
+ROCKET_ENGINE_IMAGE = {
+
+    love.graphics.newImage("data/graphics/images/woodJet.png"),
+    love.graphics.newImage("data/graphics/images/ironJet.png"),
+    love.graphics.newImage("data/graphics/images/goldJet.png"),
+    love.graphics.newImage("data/graphics/images/diamondJet.png")
+
+}
+
 function drawRocketEngine(self, robot)
 
     local effect = 1 - self.hp / self.maxHp
 
-    setColor(255, 100, 55)
-    love.graphics.circle("fill", robot.x + (self.offset.x or 0) - camera[1], robot.y + (self.offset.y or 0) - camera[2], 20)
-    setColor(255, 255, 255)
+    drawSprite(ROCKET_ENGINE_IMAGE[self.tier + 1], robot.x + (self.offset.x or 0), robot.y + (self.offset.y or 0), 1 + self.iFrames / 0.2 * 0.15, 1 - self.iFrames / 0.2 * 0.15, ((robot.rotation or 0) - (self.rotation or 0)) / 180 * 3.14 + math.sin(globalTimer * 15 + (self.rotation or 0)) * 0.15 * effect - 1.57)
 end
 
 function newGun(tier) -- Rocket engine
@@ -162,18 +220,28 @@ function newGun(tier) -- Rocket engine
 
         distance = 45,
 
-        rotation = 90,
-
         particles = newParticleSystem(0, 0, deepcopyTable(ROCKET_ENGINE_FIRE)),
 
-        maxHp = 35,
-        hp = 35 + 20 * tier,
+        maxHp = 35 + 15 * tier,
+        hp = 35 + 15 * tier,
 
         firerate = 1 + 0.2 * tier,
 
         shootTimer = 1,
 
-        barLerp = 1
+        barLerp = 1,
+
+        shootAnimation = 0,
+
+        fancyName = "Gun " .. romanLetters[tier + 1],
+
+        tooltipMessages = {
+
+            "Shoots in its direction",
+            "Hp " .. tostring(35 + 15 * tier),
+            "Firerate x" .. tostring(1 + 0.2 * tier)
+
+        }
 
     }
 
@@ -181,11 +249,15 @@ end
 
 function processGun(self, robot, enemy)
 
+    self.shootAnimation = lerp(self.shootAnimation, 0, dt * 12)
+
     self.offset = self.offset:rotate(robot.rotationVel * dt)
 
     self.shootTimer = self.shootTimer - dt * self.firerate
 
     if self.shootTimer < 0 then
+
+        self.shootAnimation = 0.4
 
         self.shootTimer = 0.18
 
@@ -205,8 +277,8 @@ function processGun(self, robot, enemy)
 
             vel = bulletVel,
 
-            x = robot.x + (self.offset.x or 0),
-            y = robot.y + (self.offset.y or 0),
+            x = robot.x + (self.offset.x or 0) * 2,
+            y = robot.y + (self.offset.y or 0) * 2,
 
             damage = 7
 
@@ -218,13 +290,21 @@ function processGun(self, robot, enemy)
 
 end
 
+GUN_IMAGE = {
+
+    love.graphics.newImage("data/graphics/images/woodCannon.png"),
+    love.graphics.newImage("data/graphics/images/ironCannon.png"),
+    love.graphics.newImage("data/graphics/images/goldCannon.png"),
+    love.graphics.newImage("data/graphics/images/diamondCannon.png")
+
+}
+
 function drawGun(self, robot)
 
     local effect = 1 - self.hp / self.maxHp
 
-    setColor(255, 255, 0)
-    love.graphics.circle("fill", robot.x + (self.offset.x or 0) - camera[1], robot.y + (self.offset.y or 0) - camera[2], 20)
-    setColor(255, 255, 255)
+    drawSprite(GUN_IMAGE[self.tier + 1], robot.x + (self.offset.x or 0), robot.y + (self.offset.y or 0), 1 + self.iFrames / 0.2 * 0.15 - self.shootAnimation, 1 - self.iFrames / 0.2 * 0.15 + self.shootAnimation, ((robot.rotation or 0) - (self.rotation or 0)) / 180 * 3.14 + math.sin(globalTimer * 15 + (self.rotation or 0)) * 0.15 * effect - 1.57)
+
 end
 
 PARTS = {
@@ -238,9 +318,11 @@ gun = newGun
 
 SMOKE_PARTICLES = loadJson("data/graphics/particles/partLowSmoke.json")
 
-function newPart(name, side)
+function newPart(name, side, tier)
 
-    local part = PARTS[name]()
+    if PARTS[name] == nil then return end
+
+    local part = PARTS[name](tier)
 
     part.name = name
 
@@ -302,10 +384,10 @@ function collidePart(part, robot, enemy)
 
             if newVec(partPos.x - enemyPartPos.x, partPos.y - enemyPartPos.y):getLen() < 48 and not (enemyPart.iFrames > 0) then
 
-                local momentum = newVec(enemy.velocity.x + robot.velocity.x, enemy.velocity.y + robot.velocity.y):getLen() / 500
+                local momentum = newVec(enemy.velocity.x + robot.velocity.x, enemy.velocity.y + robot.velocity.y):getLen() / 600
 
-                local enemySpeedFactor = enemy.velocity:getLen() / 250 * 0.5 + momentum * 0.5
-                local selfSpeedFactor = robot.velocity:getLen() / 250 * 0.5 + momentum * 0.5
+                local enemySpeedFactor = enemy.velocity:getLen() / 400 * 0.5 + momentum * 0.5
+                local selfSpeedFactor = robot.velocity:getLen() / 400 * 0.5 + momentum * 0.5
 
                 part.iFrames = 0.4
 
@@ -370,7 +452,7 @@ function drawPart(part, robot)
         if part.hp <= 0 then
             
             if part.particles ~= nil then
-                part.particles.ticks = 0
+                part.particles.ticks = 1
 
                 table.insert(particleSystemsUnder, part.particles)
             end
@@ -441,4 +523,31 @@ function drawPartUI(part, robot)
 
     return part
     
+end
+
+function drawPartToolTip(part)
+
+    local xOffset = 0
+
+    local width = FONT:getWidth(part.fancyName) + 24
+    local height = FONT:getHeight(part.fancyName) + 8
+    local lines = #part.tooltipMessages + 1
+
+    for id, line in ipairs(part.tooltipMessages) do
+
+        width = math.max(width, FONT:getWidth(line) + 24)
+        height = height + FONT:getHeight(line) + 8
+
+    end
+
+    xOffset = math.min(xM - width * 0.5, 0)
+
+    outlinedText(xM - xOffset, yM - height + 4, 2, part.fancyName, {0, 255, 0})
+
+    for id, line in ipairs(part.tooltipMessages) do
+
+        outlinedText(xM - xOffset, yM - height / lines * (#part.tooltipMessages - id + 1), 2, line, {255, 255, 255})
+
+    end
+
 end
