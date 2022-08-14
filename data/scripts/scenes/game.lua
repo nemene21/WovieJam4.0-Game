@@ -16,7 +16,7 @@ function gameReload()
     if enemyParts == nil then
 
         enemyParts = {"wheel", "spike"}
-        enemyPartLevels = {0, 0}
+        enemyPartLevels = {3, 0}
 
     else
 
@@ -28,26 +28,26 @@ function gameReload()
     taken = {}
 
     local index = love.math.random(1, #enemyParts); taken[index] = true
-    opponent.leftPart = newPart(enemyParts[index], "left", 0)
+    opponent.leftPart = newPart(enemyParts[index], "left", enemyPartLevels[index])
 
     while taken[index] == true and not (#enemyParts < 2) do
         
         index = love.math.random(1, #enemyParts)
-        opponent.rightPart = newPart(enemyParts[index], "right", 0)
+        opponent.rightPart = newPart(enemyParts[index], "right", enemyPartLevels[index])
 
     end taken[index] = true
 
     while taken[index] == true and not (#enemyParts < 3) do
 
         index = love.math.random(1, #enemyParts)
-        opponent.upPart = newPart(enemyParts[index], "up", 0)
+        opponent.upPart = newPart(enemyParts[index], "up", enemyPartLevels[index])
 
     end taken[index] = true
 
     while taken[index] == true and not (#enemyParts < 4) do
 
         index = love.math.random(1, #enemyParts)
-        opponent.downPart = newPart(enemyParts[index], "down", 0)
+        opponent.downPart = newPart(enemyParts[index], "down", enemyPartLevels[index])
 
     end taken[index] = true
 

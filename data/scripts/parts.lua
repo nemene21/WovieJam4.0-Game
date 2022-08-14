@@ -213,8 +213,9 @@ function drawTNT(self, robot)
 
     local effect = 1 - self.hp / self.maxHp
 
+    setColor(255, 0, 0)
     drawSprite(TNT[self.tier + 1], robot.x + (self.offset.x or 0), robot.y + (self.offset.y or 0), 1 + self.iFrames / 0.2 * 0.15, 1 - self.iFrames / 0.2 * 0.15, ((robot.rotation or 0) - (self.rotation or 0)) / 180 * 3.14 + 1.57 + math.sin(globalTimer * 15 + (self.rotation or 0)) * 0.15 * effect)
-
+    setColor(255, 255, 255)
 end
 
 ROCKET_ENGINE_FIRE = loadJson("data/graphics/particles/rocketEngine.json")
