@@ -141,10 +141,10 @@ function newTNT(tier) -- TNT
         process = processTNT,
         draw = drawTNT,
 
-        distance = 57,
+        distance = 42,
 
-        maxHp = 0.0001,
-        hp = 0.0001,
+        maxHp = 1,
+        hp = 1,
 
         damage = 100 + 50 * tier,
         
@@ -169,10 +169,10 @@ function newTNT(tier) -- TNT
 end
 
 TNT = {
-    love.graphics.newImage("data/graphics/images/woodSpike.png"),
-    love.graphics.newImage("data/graphics/images/ironSpike.png"),
-    love.graphics.newImage("data/graphics/images/goldSpike.png"),
-    love.graphics.newImage("data/graphics/images/diamondSpike.png")
+    love.graphics.newImage("data/graphics/images/woodTNT.png"),
+    love.graphics.newImage("data/graphics/images/ironTNT.png"),
+    love.graphics.newImage("data/graphics/images/goldTNT.png"),
+    love.graphics.newImage("data/graphics/images/diamondTNT.png")
 }
 
 function processTNT(self, robot, enemy)
@@ -215,9 +215,7 @@ function drawTNT(self, robot)
 
     local effect = 1 - self.hp / self.maxHp
 
-    setColor(255, 0, 0)
-    drawSprite(TNT[self.tier + 1], robot.x + (self.offset.x or 0), robot.y + (self.offset.y or 0), 1 + self.iFrames / 0.2 * 0.15, 1 - self.iFrames / 0.2 * 0.15, ((robot.rotation or 0) - (self.rotation or 0)) / 180 * 3.14 + 1.57 + math.sin(globalTimer * 15 + (self.rotation or 0)) * 0.15 * effect)
-    setColor(255, 255, 255)
+    drawSprite(TNT[self.tier + 1], robot.x + (self.offset.x or 0), robot.y + (self.offset.y or 0), 1 + self.iFrames / 0.2 * 0.15, 1 - self.iFrames / 0.2 * 0.15, ((robot.rotation or 0) - (self.rotation or 0)) / 180 * 3.14 + 1.57 + math.sin(globalTimer * 15 + (self.rotation or 0)) * 0.15 * effect + 0.785)
 end
 
 ROCKET_ENGINE_FIRE = loadJson("data/graphics/particles/rocketEngine.json")

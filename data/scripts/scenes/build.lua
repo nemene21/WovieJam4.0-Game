@@ -21,7 +21,7 @@ function buildReload()
         
         end)
 
-        partInventory = {newInventorySlot("wheel", 0), newInventorySlot("wheel", 0), newInventorySlot("spike", 0), newInventorySlot("spike", 0)}
+        partInventory = {newInventorySlot("wheel", 0), newInventorySlot("wheel", 0), newInventorySlot("spike", 0), newInventorySlot("TNT", 0)}
 
         score = 0
 
@@ -60,6 +60,8 @@ function buildReload()
     trashSlotScale = 1
 
     DONE = newButton(400, 150, "DONE")
+
+    TRASH = love.graphics.newImage("data/graphics/images/trashIcon.png")
     
 end
 
@@ -173,6 +175,7 @@ function build()
 
     setColor(255, 255, 255)
     drawSprite(SLOT_IMAGE, 64, 64, trashSlotScale, trashSlotScale)
+    drawSprite(TRASH, 64, 64)
 
     if xM > 64 - 36 and xM < 64 + 36 and yM > 64 - 36 and yM < 64 + 36 and not alreadyPressed then
 
