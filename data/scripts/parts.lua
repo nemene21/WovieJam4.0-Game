@@ -181,6 +181,8 @@ function processTNT(self, robot, enemy)
 
     if self.hp <= 0 then
 
+        playSound("tntExplode")
+
         local partPos = newVec(robot.x + self.offset.x, robot.y + self.offset.y)
 
         shock(partPos.x, partPos.y, 0.4, 0.075, 0.4)
@@ -358,6 +360,8 @@ function processGun(self, robot, enemy)
 
         shake(1, 2, 0.1)
 
+        playSound("shoot", love.math.random(60, 180) * 0.01)
+
         table.insert(bullets, {
 
             enemy = enemy,
@@ -474,6 +478,8 @@ function collidePart(part, robot, enemy)
 
                 local momentum = newVec(enemy.velocity.x + robot.velocity.x, enemy.velocity.y + robot.velocity.y):getLen() / 600
 
+                playSound("collide", love.math.random(50, 100) * 0.01, 12, momentum + 0.4)
+
                 local enemySpeedFactor = enemy.velocity:getLen() / 400 * 0.5 + momentum * 0.5
                 local selfSpeedFactor = robot.velocity:getLen() / 400 * 0.5 + momentum * 0.5
 
@@ -562,6 +568,8 @@ function drawPart(part, robot)
             shock(robot.x + part.offset.x, robot.y + part.offset.y, 0.15, 0.05, 0.3)
 
             shake(10, 3, 0.2)
+
+            playSound("partDie")
 
             part = nil
 

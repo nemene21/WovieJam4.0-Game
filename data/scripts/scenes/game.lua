@@ -92,6 +92,8 @@ function gameReload()
 
     playTrack("battle", 0.8)
 
+    BG = love.graphics.newImage("data/graphics/images/battleBackground.png")
+
 end
 
 function gameDie()
@@ -125,8 +127,11 @@ function game()
     -- Reset
     sceneAt = "game"
     
-    setColor(255, 255, 255)
+    setColor(155, 155, 155)
     clear(155, 155, 155)
+
+    drawSprite(BG, 400, 300)
+    setColor(255, 255, 255)
 
     local kill = {}                                            -- Draw particles under
     for id,P in ipairs(particleSystemsUnder) do
@@ -251,6 +256,8 @@ function game()
             table.insert(particleSystemsOver, particles)
             shake(16, 4, 0.2)
             shock(opponent.x, opponent.y, 0.8, 0.08, 0.4)
+
+            playSound("applause")
             
         end
 

@@ -46,7 +46,7 @@ function menu()
 
     cogRot = lerp(cogRot, cogRotLerpTo, dt * 10)
 
-    if PLAY:process() then
+    if PLAY:process() and globalTimer > 2.1 then
 
         player = nil
         opponent = nil

@@ -1,5 +1,11 @@
 
 SOUNDS = {
+    shoot = love.audio.newSource("data/sounds/sfx/shoot.wav", "stream"),
+    collide = love.audio.newSource("data/sounds/sfx/collide.wav", "stream"),
+    clickSlot = love.audio.newSource("data/sounds/sfx/slotClick.wav", "stream"),
+    partDie = love.audio.newSource("data/sounds/sfx/partDie.wav", "stream"),
+    tntExplode = love.audio.newSource("data/sounds/sfx/tntExplode.wav", "stream"),
+    applause = love.audio.newSource("data/sounds/sfx/end.wav", "stream")
 }
 
 MUSIC = {
@@ -10,7 +16,7 @@ MUSIC = {
 
 MASTER_VOLUME = 1
 SFX_VOLUME = 1
-MUSIC_VOLUME = 1
+MUSIC_VOLUME = 0.25
 trackPitch = 1
 
 SOUNDS_NUM_PLAYING = {}

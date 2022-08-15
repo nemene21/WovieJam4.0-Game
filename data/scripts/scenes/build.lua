@@ -21,7 +21,7 @@ function buildReload()
         
         end)
 
-        partInventory = {newInventorySlot("wheel", 0), newInventorySlot("wheel", 0), newInventorySlot("spike", 0), newInventorySlot("TNT", 0)}
+        partInventory = {newInventorySlot("wheel", 0), newInventorySlot("wheel", 0), newInventorySlot("spike", 0), newInventorySlot("gun", 0)}
 
         score = 0
 
@@ -132,6 +132,8 @@ function build()
 
                 slot.part = nil
 
+                playSound("clickSlot")
+
                 table.insert(kill, id)
 
             end
@@ -156,6 +158,8 @@ function build()
         if mouseJustPressed(1) then
 
             inventorySlotPlus.scale = 1.45
+
+            playSound("clickSlot")
 
             if partChosen ~= nil then
 
@@ -184,6 +188,8 @@ function build()
         trashSlotScale = lerp(trashSlotScale, 1.2, dt * 12)
 
         if mouseJustPressed(1) then
+
+            playSound("clickSlot")
 
             trashSlotScale = 1.45
 
@@ -224,6 +230,8 @@ function build()
 
         if mouseJustPressed(1) then
 
+            playSound("clickSlot")
+
             local playerPartHold = deepcopyTable(player.leftPart)
 
             if partChosen ~= nil then player.leftPart = newPart(partChosen.name, "left", partChosen.tier) else player.leftPart = nil end
@@ -246,6 +254,8 @@ function build()
         if player.rightPart ~= nil then drawPartToolTip(player.rightPart) end
 
         if mouseJustPressed(1) then
+
+            playSound("clickSlot")
 
             local playerPartHold = deepcopyTable(player.rightPart)
 
@@ -270,6 +280,8 @@ function build()
 
         if mouseJustPressed(1) then
 
+            playSound("clickSlot")
+
             local playerPartHold = deepcopyTable(player.upPart)
 
             if partChosen ~= nil then player.upPart = newPart(partChosen.name, "up", partChosen.tier) else player.upPart = nil end
@@ -292,6 +304,8 @@ function build()
         if player.downPart ~= nil then drawPartToolTip(player.downPart) end
 
         if mouseJustPressed(1) then
+
+            playSound("clickSlot")
 
             local playerPartHold = deepcopyTable(player.downPart)
 
