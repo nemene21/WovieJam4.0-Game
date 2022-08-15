@@ -7,14 +7,15 @@ function love.load()
     -- Window and defaulting
     globalTimer = 0; love.graphics.setDefaultFilter("nearest","nearest")
 
-    fullscreen = false; title = "Ne_mene´s Framework"
+    fullscreen = false; title = "Creative Destruction"
 
     WS = {800,600}; wFlags = {resizable=true}
     aspectRatio = {WS[1]/WS[2],WS[2]/WS[1]}
     love.graphics.setBackgroundColor(0,0,0,1); love.window.setMode(WS[1],WS[2],wFlags); display = love.graphics.newCanvas(WS[1],WS[2]); displayScale = 1
     postProCanvas = love.graphics.newCanvas(WS[1],WS[2])
 
-    love.window.setTitle(title.."                   [F1 for fullscreen]")
+    love.window.setTitle(title.."                   [shift + F1 for fullscreen]")
+    love.window.setIcon(love.image.newImageData("data/graphics/images/gameIcon.png"))
 
     -- Imports
     require "init"
@@ -106,6 +107,8 @@ function love.draw()
 
     -- Check for fullscreen
     if justPressed("f1") then changeFullscreen() end
+
+    if justPressed("f2") then love.graphics.captureScreenshot("screenshot.png") end
 
     -- Reset input
     lastKeyPressed = "none"; lastMouseButtonPressed = -1

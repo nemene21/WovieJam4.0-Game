@@ -246,7 +246,7 @@ function newRocketEngine(tier) -- Rocket engine
 
         tooltipMessages = {
 
-            "Makes the robot move forward",
+            "Makes the robot move forward. cannot move backwards",
             "Hp " .. tostring(35 + 15 * tier),
             "Speed 2"
 

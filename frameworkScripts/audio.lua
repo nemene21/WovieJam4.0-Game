@@ -5,13 +5,16 @@ SOUNDS = {
     clickSlot = love.audio.newSource("data/sounds/sfx/slotClick.wav", "stream"),
     partDie = love.audio.newSource("data/sounds/sfx/partDie.wav", "stream"),
     tntExplode = love.audio.newSource("data/sounds/sfx/tntExplode.wav", "stream"),
-    applause = love.audio.newSource("data/sounds/sfx/end.wav", "stream")
+    applause = love.audio.newSource("data/sounds/sfx/end.wav", "stream"),
+    click = love.audio.newSource("data/sounds/sfx/click.wav", "stream"),
+    loose = love.audio.newSource("data/sounds/sfx/loose.wav", "stream")
 }
 
 MUSIC = {
     build = love.audio.newSource("data/sounds/music/build.mp3", "stream"),
     battle = love.audio.newSource("data/sounds/music/battle.mp3", "stream"),
-    menu = love.audio.newSource("data/sounds/music/menu.mp3", "stream")
+    menu = love.audio.newSource("data/sounds/music/menu.mp3", "stream"),
+    overdrive = love.audio.newSource("data/sounds/music/overdrive.wav", "stream")
 }
 
 MASTER_VOLUME = 1
@@ -30,9 +33,30 @@ NEW_TRACK = "NONE"
 trackTransition = 0
 trackTransitionMax = 0
 
+pauseTrack = false
+
+trackVolume = 1
+
 function playTrack(track, transition)
 
     if track ~= NEW_TRACK and track ~= TRACK_PLAYING then
+
+        pauseTrack = false
+
+        NEW_TRACK = track
+
+        trackTransition = transition or 0
+        trackTransitionMax = transition or 0
+    end
+
+end
+
+function playTrackPause(track, transition)
+
+    if track ~= NEW_TRACK and track ~= TRACK_PLAYING then
+
+        pauseTrack = true
+
         NEW_TRACK = track
 
         trackTransition = transition or 0
@@ -57,14 +81,14 @@ function processSound()
     end
 
     if MUSIC[TRACK_PLAYING] ~= nil then
-        MUSIC[TRACK_PLAYING]:setVolume(MUSIC_VOLUME * MASTER_VOLUME)
+        MUSIC[TRACK_PLAYING]:setVolume(MUSIC_VOLUME * MASTER_VOLUME * trackVolume)
         MUSIC[TRACK_PLAYING]:setPitch(trackPitch)
         
         if not MUSIC[TRACK_PLAYING]:isPlaying() then MUSIC[TRACK_PLAYING]:play() end
     end
 
     if MUSIC[NEW_TRACK] ~= nil then
-        MUSIC[NEW_TRACK]:setVolume(MUSIC_VOLUME * MASTER_VOLUME)
+        MUSIC[NEW_TRACK]:setVolume(MUSIC_VOLUME * MASTER_VOLUME * trackVolume)
         MUSIC[NEW_TRACK]:setPitch(trackPitch)
         
         if not MUSIC[NEW_TRACK]:isPlaying() then MUSIC[NEW_TRACK]:play() end
@@ -73,7 +97,8 @@ function processSound()
     trackTransition = math.max(trackTransition - dt, 0)
     if trackTransition == 0 and NEW_TRACK ~= nil then
 
-        if MUSIC[TRACK_PLAYING] ~= nil then MUSIC[TRACK_PLAYING]:stop() end
+        if MUSIC[TRACK_PLAYING] ~= nil and not pauseTrack then MUSIC[TRACK_PLAYING]:stop() end
+        if MUSIC[TRACK_PLAYING] ~= nil and pauseTrack then MUSIC[TRACK_PLAYING]:pause() end
 
         TRACK_PLAYING = NEW_TRACK
         NEW_TRACK = nil

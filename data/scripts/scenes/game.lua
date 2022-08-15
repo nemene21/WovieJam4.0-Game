@@ -19,7 +19,7 @@ function gameReload()
 
     else
 
-        table.insert(enemyParts, parts[love.math.random(1, #parts - 1 + boolToInt(score > 5))])
+        table.insert(enemyParts, parts[love.math.random(1, #parts - 1 + boolToInt(score > 4))])
 
     end
 
@@ -108,13 +108,21 @@ function game()
 
             overdriveEndTimer = 2
 
+            playTrackPause("overdrive", 0.1)
+
         end
 
         overdrive = true
 
         overdriveEndTimer = overdriveEndTimer - dt
 
-        if overdriveEndTimer < 0 then overdriveActivate = 0 end
+        if overdriveEndTimer < 0 then
+            
+            overdriveActivate = 0
+
+            playTrack("battle", 0.8)
+        
+        end
 
     else
 
@@ -244,6 +252,30 @@ function game()
 
     end particleSystemsOver = wipeKill(kill,particleSystemsOver)
 
+    local movingParts = 0
+
+    if opponent.leftPart ~= nil then movingParts = movingParts + boolToInt(opponent.leftPart.name == "rocketEngine" or opponent.leftPart.name == "wheel") end 
+
+    if opponent.rightPart ~= nil then movingParts = movingParts + boolToInt(opponent.rightPart.name == "wheel") end 
+
+    if opponent.upPart ~= nil then movingParts = movingParts + boolToInt(opponent.upPart.name == "wheel") end 
+
+    if opponent.downPart ~= nil then movingParts = movingParts + boolToInt(opponent.downPart.name == "wheel") end 
+
+    if player.leftPart ~= nil then movingParts = movingParts + boolToInt(player.leftPart.name == "rocketEngine" or player.leftPart.name == "wheel") end 
+
+    if player.rightPart ~= nil then movingParts = movingParts + boolToInt(player.rightPart.name == "rocketEngine" or player.rightPart.name == "wheel") end 
+
+    if player.upPart ~= nil then movingParts = movingParts + boolToInt(player.upPart.name == "rocketEngine" or player.upPart.name == "wheel") end 
+
+    if player.downPart ~= nil then movingParts = movingParts + boolToInt(player.downPart.name == "rocketEngine" or player.downPart.name == "wheel") end 
+
+    if overdrive then
+
+        outlinedText(400 + love.math.random(-12, 12), 300 + love.math.random(-12, 12), 3, "OVERDRIVE", {255, 0, 0, 255 * math.abs(math.sin(overdriveEndTimer * 0.5))}, 2, 2)
+
+    end
+
     if opponent.leftPart == nil and opponent.rightPart == nil and opponent.upPart == nil and opponent.downPart == nil then
 
         if finished == false then
@@ -261,11 +293,17 @@ function game()
             
         end
 
-        endAnimation = endAnimation + dt
+        trackVolume = endAnimation / 1.5
 
         transition = endAnimation / 1.5
 
+        outlinedText(player.x, player.y - 48 - 48 * transition, 2, "+ 1 Item", {0, 255, 0, 255 * round(math.abs(math.sin(globalTimer * 3.14 * 8)))})
+
+        endAnimation = endAnimation + dt
+
         if endAnimation > 1.5 then
+
+            trackVolume = 1
 
             sceneAt = "build"
 
@@ -273,9 +311,11 @@ function game()
 
         end
 
-    else if player.leftPart == nil and player.rightPart == nil and player.upPart == nil and player.downPart == nil then
+    else if (player.leftPart == nil and player.rightPart == nil and player.upPart == nil and player.downPart == nil) then
 
         if finished == false then
+
+            playSound("loose", 1, 1, 0.2)
 
             finished = true
 
@@ -288,17 +328,45 @@ function game()
             
         end
 
+        trackVolume = endAnimation / 1.5
+
         endAnimation = endAnimation + dt
 
         transition = endAnimation / 1.5
 
         if endAnimation > 1.5 then
 
+            trackVolume = 1
+
+            sceneAt = "endscreen"
+
+        end
+    
+    else if movingParts == 0 then
+
+        if finished == false then
+
+            playSound("loose")
+
+            finished = true
+            
+        end
+
+        trackVolume = endAnimation / 1.5
+
+        endAnimation = endAnimation + dt
+
+        transition = endAnimation / 1.5
+
+        if endAnimation > 1.5 then
+
+            trackVolume = 1
+
             sceneAt = "endscreen"
 
         end
 
-    end end
+    end end end
 
     -- Return scene
     return sceneAt
