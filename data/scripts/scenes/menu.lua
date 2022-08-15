@@ -1,8 +1,8 @@
 
 function menuReload()
 
-    PLAY = newButton(400, 250, "PLAY")
-    QUIT = newButton(400, 350, "QUIT")
+    PLAY = newButton(400, 400, "PLAY")
+    QUIT = newButton(400, 500, "QUIT")
 
     SMALL_COG = love.graphics.newImage("data/graphics/images/smallCog.png")
     BIG_COG = love.graphics.newImage("data/graphics/images/bigCog.png")
@@ -16,6 +16,8 @@ function menuReload()
     BG3 = love.graphics.newImage("data/graphics/images/people3.png")
 
     playTrack("menu", 2)
+
+    TITLE = love.graphics.newImage("data/graphics/images/logo.png")
     
 end
 
@@ -62,6 +64,8 @@ function menu()
     drawSprite(SMALL_COG, 800, 600, 2, 2, cogRot)
     drawSprite(SMALL_COG, 0, 0, 2, 2, cogRot)
     drawSprite(SMALL_COG, 800, 0, 2, 2, cogRot)
+
+    drawSprite(TITLE, 400, 160 + math.sin(globalTimer * 2) * 16)
 
     love.graphics.setColor(1,1,1,1)
     love.graphics.draw(MOUSE,xM,yM,0,SPRSCL * mouseScale,SPRSCL * mouseScale)
