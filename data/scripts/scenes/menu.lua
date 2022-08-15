@@ -14,6 +14,8 @@ function menuReload()
     BG1 = love.graphics.newImage("data/graphics/images/people1.png")
     BG2 = love.graphics.newImage("data/graphics/images/people2.png")
     BG3 = love.graphics.newImage("data/graphics/images/people3.png")
+
+    playTrack("menu", 2)
     
 end
 

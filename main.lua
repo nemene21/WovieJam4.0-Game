@@ -74,6 +74,7 @@ function love.draw()
     --------------------------------------------------------------------------SCENE CALLED
     processCamera()
     processShockwaves()
+    processSound()
 
     love.graphics.setShader()
 

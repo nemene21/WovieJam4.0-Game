@@ -29,26 +29,26 @@ function gameReload()
         taken = {}
 
         local index = love.math.random(1, #enemyParts); taken[index] = true
-        opponent.rightPart = newPart(enemyParts[index], "right", 0, math.min(score * 0.33, 3))
+        opponent.rightPart = newPart(enemyParts[index], "right", love.math.random(0, math.min(score * 0.33, 3)))
 
         while taken[index] == true and not (#enemyParts < 2) and enemyParts[index].name ~= "rocketEngine" do
             
             index = love.math.random(1, #enemyParts)
-            opponent.leftPart = newPart(enemyParts[index], "left", 0, math.min(score * 0.33, 3))
+            opponent.leftPart = newPart(enemyParts[index], "left", love.math.random(0, math.min(score * 0.33, 3)))
 
         end taken[index] = true
 
         while taken[index] == true and not (#enemyParts < 3) and enemyParts[index].name ~= "rocketEngine" do
 
             index = love.math.random(1, #enemyParts)
-            opponent.upPart = newPart(enemyParts[index], "up", 0, math.min(score * 0.33, 3))
+            opponent.upPart = newPart(enemyParts[index], "up", love.math.random(0, math.min(score * 0.33, 3)))
 
         end taken[index] = true
 
         while taken[index] == true and not (#enemyParts < 4) and enemyParts[index].name ~= "rocketEngine" do
 
             index = love.math.random(1, #enemyParts)
-            opponent.downPart = newPart(enemyParts[index], "down", 0, math.min(score * 0.33, 3))
+            opponent.downPart = newPart(enemyParts[index], "down", love.math.random(0, math.min(score * 0.33, 3)))
 
         end taken[index] = true
 
@@ -89,6 +89,8 @@ function gameReload()
     overdriveEndTimer = 0
 
     overdriveParticles = newParticleSystem(0, 0, loadJson("data/graphics/particles/overdrive.json"))
+
+    playTrack("battle", 0.8)
 
 end
 

@@ -3,6 +3,9 @@ SOUNDS = {
 }
 
 MUSIC = {
+    build = love.audio.newSource("data/sounds/music/build.mp3", "stream"),
+    battle = love.audio.newSource("data/sounds/music/battle.mp3", "stream"),
+    menu = love.audio.newSource("data/sounds/music/menu.mp3", "stream")
 }
 
 MASTER_VOLUME = 1
@@ -31,15 +34,6 @@ function playTrack(track, transition)
     end
 
 end
-
-function switchTracks()
-
-    local hold = TRACK_PLAYING
-
-    TRACK_PLAYING = NEW_TRACK
-    NEW_TRACK = hold
-    
-end
     
 function playSound(string, pitch, maxPlays, vol)
     if (maxPlays or 12) > SOUNDS_NUM_PLAYING[string]  then
@@ -57,14 +51,14 @@ function processSound()
     end
 
     if MUSIC[TRACK_PLAYING] ~= nil then
-        MUSIC[TRACK_PLAYING]:setVolume(MUSIC_VOLUME * MASTER_VOLUME * trackVolume)
+        MUSIC[TRACK_PLAYING]:setVolume(MUSIC_VOLUME * MASTER_VOLUME)
         MUSIC[TRACK_PLAYING]:setPitch(trackPitch)
         
         if not MUSIC[TRACK_PLAYING]:isPlaying() then MUSIC[TRACK_PLAYING]:play() end
     end
 
     if MUSIC[NEW_TRACK] ~= nil then
-        MUSIC[NEW_TRACK]:setVolume(MUSIC_VOLUME * MASTER_VOLUME * trackVolume)
+        MUSIC[NEW_TRACK]:setVolume(MUSIC_VOLUME * MASTER_VOLUME)
         MUSIC[NEW_TRACK]:setPitch(trackPitch)
         
         if not MUSIC[NEW_TRACK]:isPlaying() then MUSIC[NEW_TRACK]:play() end

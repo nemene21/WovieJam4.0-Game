@@ -62,6 +62,8 @@ function buildReload()
     DONE = newButton(400, 150, "DONE")
 
     TRASH = love.graphics.newImage("data/graphics/images/trashIcon.png")
+
+    playTrack("build", 0.8)
     
 end
 
